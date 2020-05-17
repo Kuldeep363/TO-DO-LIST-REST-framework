@@ -1,0 +1,292 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <link rel="icon" href="{% static 'listFrontEnd/images/icons8-user-100.png' %}">
+    <link rel="stylesheet" href="{% static 'listFrontEnd/css/todo.css' %}">
+    <title>To-Do List</title>
+
+
+    </head>
+
+    <body>
+        <div class="container-fluid">
+    
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+                    <p id="todo">TO-DO LIST</p>
+                </div>
+            </div>
+    
+            <!-- tasks forms -->
+            <div class="d-flex justify-content-center align-item-center" id="todo-container">
+                <div class="d-flex justify-content-center form-container">
+                    <div style="width: 400px;">
+                        <form  style="width: 100%;" method="POST" id="form">
+                            <div class="input-div m-3">
+                                <label for="task" >Task</label><br>
+                                <input type="text" name="task" id="task" class="task-data" autocomplete='off' >
+                                <small id="task_error"></small>
+                            </div>
+    
+                            <div class="input-div m-3">
+                                <label for="description">Description( optional )</label><br>
+                                <textarea name="description" id="description" class="task-data" style="height: 120px;"></textarea>
+                            </div>
+
+                            <div class="input-div m-3" style="position: relative;">
+                                <label for="date">Deadline</label><br>
+                                <input type="date" name="deadline" id="date" class="task-data" >
+                                <span style="position: absolute;top: 30px;right: -5px;font-size: 45px;pointer-events: none;"> &#128197;</span>
+                                <small id="date_error"></small>
+                            </div>
+    
+                            <div style="text-align: center;">
+                                <button type="button"  id="check"><span class="p-1">&plus;</span><span >ADD TASK</span></button>
+                                <input type="submit" id="submit" style="display: none;">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- tasks -->
+            <div id="task-wrapper" class="container-fluid">
+
+            </div>
+            
+                            
+            </div>   
+            </div>
+        </div>
+        <script>
+
+        function getCookie(name) {
+		    var cookieValue = null;
+		    if (document.cookie && document.cookie !== '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = cookies[i].trim();
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+        csrf_token = getCookie('csrftoken')
+        active_task = null
+        previous_list = []
+
+            function buildList(){
+                let wrapper = document.getElementById('task-wrapper')
+
+                var url = 'http://127.0.0.1:8000/api/task-list'
+
+                fetch(url)
+                .then((res)=>res.json())
+                .then((data)=>{
+                    console.log('Data:',data)
+
+                    let list = data
+                    for(let i in list){
+
+                        try{
+                            document.getElementById(`data-row-${i}`).remove()
+                        }
+                        catch(err){
+
+                        }
+                        console.log(list[i])    
+                        let item = `
+                        <div class="d-flex justify-content-center m-3">
+                            <div class="d-flex justify-content-center tasks-container" >               
+                            <div class="tasks task-${list[i].complete}" id='data-row-${i}'>
+                                <div class="row complete-${list[i].complete}" >
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">Completed</div>
+                                </div> 
+                                    <div class="row title align-items-center">
+                                        <div class="col-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 text-center" >
+                                            <div class="pt-2" style="font-weight: bold;">${list[i].title}</div>
+                                            <div ><span style="font-weight: bold;padding: 2px;">Deadline:</span> ${ list[i].deadline } </div>
+                                        </div>
+                                        
+                                        <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 task-status p-0 ${list[i].complete}">
+                                            <img src="{% static 'listFrontEnd/images/icons8-edit-64.png' %}" class="edit" alt="edit | task edit | pencil | change" style="width: 30px;height: 30px;cursor:pointer" id="image-edit-${list[i].taskSlug}">
+                                        </div>
+                                        <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 task-status p-0 text-center ${list[i].complete}">
+                                            <img src="{% static 'listFrontEnd/images/icons8-checked-80.png' %}" class="complete" alt="complted | task completed | checked | done" style="width: 30px;height: 30px;cursor:pointer" id="image-tick-${list[i].taskSlug}">
+                                        </div>
+                                        <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 task-status p-0 ${list[i].complete}">
+                                            <img src="{% static 'listFrontEnd/images/icons8-remove-100.png' %}" class="delete" alt="Delete task | remove task | not intrested in task" style="width: 30px;height: 30px;cursor:pointer" id="image-delete-${list[i].taskSlug}">
+                                        </div>
+                                    
+                                        
+                                    </div>
+                                        <div class="text-center col-xl-12" >
+                                            <button class="more btn">&#65086;</button>
+                                        </div>
+                                    
+                                        
+                                    <div  class="task-description text-center ">
+                                        <p class="text-center" >Task Description</p>
+                                        <p>
+                                            ${list[i].description }
+                                        </p>
+                                        
+
+                                        <div class="text-center" >
+                                            <button class="less btn">&#65085;</button>
+                                        </div>
+                                    </div>        
+                                </div>            
+                            </div>
+                        </div>
+                        </div>
+                        `
+
+                        wrapper.innerHTML += item
+
+                    }
+
+                    if (previous_list.length > list.length){
+                        for(let i=list.length; i< previous_list.length;i++){
+                            document.getElementById(`data-row-${i}`).remove()
+                        }
+                    }
+
+                    previous_list = list
+
+                    let editBtn = document.getElementsByClassName('edit')
+                    let complete = document.getElementsByClassName('complete')
+                    let del = document.getElementsByClassName('delete')
+
+                    let show = document.querySelectorAll('.more.btn')
+                    let hide = document.querySelectorAll('.less.btn')
+                    let task = document.querySelectorAll('.task-description')
+
+                    for(let i in list){
+
+                        editBtn[i].addEventListener('click',()=>{
+                            updateTask(list[i])
+                        });
+                        complete[i].addEventListener('click',()=>{
+                            completeTask(list[i])
+                        });
+                        del[i].addEventListener('click',()=>{
+                            deleteTask(list[i])
+                        });
+
+                        show[i].addEventListener('click',()=>{
+                            task[i].classList.toggle('display')
+                            show[i].style.display = 'none'
+                            console.log(task[i],show[i])
+                        });
+
+                        hide[i].addEventListener('click',()=>{
+                            task[i].classList.toggle('display');
+                            show[i].style.display = 'inline-block';
+                            console.log(task[i],show[i])
+
+                        })
+
+                    }
+                })
+            }
+
+            let form = document.getElementById('form')
+            form.addEventListener('submit',(e)=>{
+                e.preventDefault()
+                console.log('form submitted')
+
+                let url = 'http://127.0.0.1:8000/api/task-create'
+
+                if(active_task != null){
+                    url = `http://127.0.0.1:8000/api/task-update/${active_task.taskSlug}`
+                    console.log(active_task,url)
+                    active_task = null
+                    console.log(active_task)
+                }
+                
+                let title = document.getElementById('task').value
+                let description = document.getElementById('description').value
+                let deadline = document.getElementById('date').value
+                fetch(url,{
+                    method:'POST',
+                    headers:{
+                        'Content-type':'application/json',
+                        'X-CSRFToken':csrf_token
+                    },
+                    body:JSON.stringify({
+                        'title':title,
+                        'description':description,
+                        'deadline':deadline
+                    })
+                }).then((response)=>{
+                    buildList()
+                    form.reset()
+                })
+            })
+
+            function updateTask(item){
+                console.log('edit clicked:',item)
+                
+
+                active_task = item
+                window.scrollTo(0,0)
+                document.getElementById('task').value = item.title
+                document.getElementById('description').value = item.description
+                document.getElementById('date').value = item.deadline
+
+
+            }
+
+            function completeTask(item){
+                console.log('task completed:',item)
+                let url = `http://127.0.0.1:8000/api/task-update/${item.taskSlug}`
+                fetch(url,{
+                    method:'POST',
+                    headers:{
+                        'Content-type':'application/json',
+                        'X-CSRFToken':csrf_token
+                    },
+                    body:JSON.stringify({
+                        'complete':true,
+                    })
+                })
+                .then((respponse)=>{
+                    buildList()
+                })
+            }
+
+            function deleteTask(item){
+                console.log('delete clicked')
+                let url = `http://127.0.0.1:8000/api/task-delete/${item.taskSlug}`
+
+                fetch(url,{
+                    method:'DELETE',
+                    headers:{
+                        'Content-type':'application/json',
+                        'X-CSRFToken':csrf_token
+                    }
+                })
+                .then((response)=>{
+                    buildList()
+                })
+            }
+            buildList()
+        </script>
+
+        <script src="{% static 'listFrontEnd/js/todo.js' %}"></script>
+    </body>
+</html>    
+
+
