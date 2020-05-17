@@ -89,7 +89,7 @@
             function buildList(){
                 let wrapper = document.getElementById('task-wrapper')
 
-                var url = 'http://127.0.0.1:8000/api/task-list'
+                var url = 'https://kr-to-do.herokuapp.com/api/task-list'
 
                 fetch(url)
                 .then((res)=>res.json())
@@ -207,10 +207,10 @@
                 e.preventDefault()
                 console.log('form submitted')
 
-                let url = 'http://127.0.0.1:8000/api/task-create'
+                let url = 'https://kr-to-do.herokuapp.com/api/task-create'
 
                 if(active_task != null){
-                    url = `http://127.0.0.1:8000/api/task-update/${active_task.taskSlug}`
+                    url = `https://kr-to-do.herokuapp.com/api/task-update/${active_task.taskSlug}`
                     console.log(active_task,url)
                     active_task = null
                     console.log(active_task)
@@ -251,7 +251,7 @@
 
             function completeTask(item){
                 console.log('task completed:',item)
-                let url = `http://127.0.0.1:8000/api/task-update/${item.taskSlug}`
+                let url = `https://kr-to-do.herokuapp.com/api/task-update/${item.taskSlug}`
                 fetch(url,{
                     method:'POST',
                     headers:{
@@ -269,7 +269,7 @@
 
             function deleteTask(item){
                 console.log('delete clicked')
-                let url = `http://127.0.0.1:8000/api/task-delete/${item.taskSlug}`
+                let url = `https://kr-to-do.herokuapp.com/api/task-delete/${item.taskSlug}`
 
                 fetch(url,{
                     method:'DELETE',
