@@ -64,140 +64,180 @@
                 </form>
 
                 
-
-
-
-                <script>
-                    //csrf token
-                    function getCookie(name) {
-                        var cookieValue = null;
-                        if (document.cookie && document.cookie !== '') {
-                            var cookies = document.cookie.split(';');
-                            for (var i = 0; i < cookies.length; i++) {
-                                var cookie = cookies[i].trim();
-                                // Does this cookie string begin with the name we want?
-                                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                    break;
-                                }
-                            }
-                        }
-                        return cookieValue;
-                    }
-                    var csrf_token = getCookie('csrftoken')
-                    // password
-                    let password = document.getElementById('pass');
-                    let passwordC = false
-                    let usernameC = false
-                    password.oninput=(e)=>{
-                        if (e.target.value.length == 0){
-                            document.getElementById('passError').innerHTML = 'Please enter password'
-                            passwordC = false   
-                            submitBtn()
-                        }
-                        else if (e.target.value.length < 8){
-                            document.getElementById('passError').innerHTML = 'Password must be 8 character long'
-                            passwordC = false
-                            submitBtn()
-                        }
-                        else{
-                            document.getElementById('passError').innerHTML = ''
-                            passwordC = true
-                            submitBtn()
-                        }
-                    }
-
-                    // username
-                    let username = document.getElementById('username');
-                    username.oninput=(e)=>{
-                        if (e.target.value.length == 0){
-                            document.getElementById('userError').innerHTML = 'Please enter username'
-                        }
-                        else if (e.target.value.length < 8){
-                            document.getElementById('userError').innerHTML = 'Username must be 8 characters long'
-                            usernameC = false
-                        }
-                        else{
-                            
-                                let url = 'http://127.0.0.1:8000/accounts/userApi?username='+ e.target.value
-                                fetch(url)
-                                .then((resp)=>resp.json())
-                                .then((data)=>{
-                                    // console.log(data,data['msg'])
-                                    if (data['msg'] == ''){
-                                        document.getElementById("userError").innerHTML = data['msg']
-                                        usernameC = true
-                                        // console.log('true')
-                                        submitBtn()
-                                    }
-                                    else{
-                                        document.getElementById('userError').innerHTML = data['msg']
-                                        usernameC = false
-                                        // console.log('false')
-                                        submitBtn()
-                                    }
-                                })                            
-                        }
-                    }
-
-                    
-
-                    
-
-                    // console.log(csrf_token)
-                    function submitBtn(){
-                        
-                        // console.log('inside submit')
-                        if(usernameC && passwordC){
-                            document.getElementById('submit').classList.remove('disable')
-                            form = document.getElementById('form')  
-                            
-                            // console.log(csrf_token)  
-                            form.addEventListener('submit',(e)=>{
-                                e.preventDefault()
-                                    let usernameData = document.getElementById('username').value
-                                    let passData = document.getElementById('pass').value
-                                    let url = 'http://127.0.0.1:8000/accounts/signupApi'
-                                    fetch(url,{
-                                        method:'POST',
-                                        headers:{
-                                            'Content-type':'application/json',
-                                            'X-CSRFToken':csrf_token
-                                        },
-                                        body:JSON.stringify({
-                                            'username': usernameData,
-                                            'password': passData
-                                        })
-                                    })
-                                    .then((resp)=>resp.json())
-                                    .then((data)=>{
-                                        // console.log(data)
-                                        if (data['success'] == 'done'){
-                                            // console.log('success')
-                                            document.getElementById('success').style.display = 'block';
-                                            setTimeout(()=>{
-                                                document.getElementById('login').click()
-                                            },2000);
-                                        }
-                                        else if (data['success'] == 'fail'){
-                                            // console.log('fail')
-                                            document.getElementById('fail').style.display = 'block';
-                                        }
-                                    })
-                                
-                            })
-                        }else{
-                            document.getElementById('submit').classList.add('disable')
-                        }
-                    }
-
-                   
-                    
-                </script>
+<div>
+    <div>
+        <div>
+            <div>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <div>
+                                    <div>
+                                        <div>
+                                            <div>
+                                                <div>
+                                                    <div>
+                                                        <div>
+                                                            <div>
+                                                                <div>
+                                                                    <div>
+                                                                        <div>
+                                                                            <div>
+                                                                                <div>
+                                                                                    <script>
+                                                                                        //csrf token
+                                                                                        function getCookie(name) {
+                                                                                            var cookieValue = null;
+                                                                                            if (document.cookie && document.cookie !== '') {
+                                                                                                var cookies = document.cookie.split(';');
+                                                                                                for (var i = 0; i < cookies.length; i++) {
+                                                                                                    var cookie = cookies[i].trim();
+                                                                                                    // Does this cookie string begin with the name we want?
+                                                                                                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                                                                                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                                                                                        break;
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                            return cookieValue;
+                                                                                        }
+                                                                                        var csrf_token = getCookie('csrftoken')
+                                                                                        // password
+                                                                                        let password = document.getElementById('pass');
+                                                                                        let passwordC = false
+                                                                                        let usernameC = false
+                                                                                        password.oninput=(e)=>{
+                                                                                            if (e.target.value.length == 0){
+                                                                                                document.getElementById('passError').innerHTML = 'Please enter password'
+                                                                                                passwordC = false   
+                                                                                                submitBtn()
+                                                                                            }
+                                                                                            else if (e.target.value.length < 8){
+                                                                                                document.getElementById('passError').innerHTML = 'Password must be 8 character long'
+                                                                                                passwordC = false
+                                                                                                submitBtn()
+                                                                                            }
+                                                                                            else{
+                                                                                                document.getElementById('passError').innerHTML = ''
+                                                                                                passwordC = true
+                                                                                                submitBtn()
+                                                                                            }
+                                                                                        }
+                                                                    
+                                                                                        // username
+                                                                                        let username = document.getElementById('username');
+                                                                                        username.oninput=(e)=>{
+                                                                                            if (e.target.value.length == 0){
+                                                                                                document.getElementById('userError').innerHTML = 'Please enter username'
+                                                                                            }
+                                                                                            else if (e.target.value.length < 8){
+                                                                                                document.getElementById('userError').innerHTML = 'Username must be 8 characters long'
+                                                                                                usernameC = false
+                                                                                            }
+                                                                                            else{
+                                                                                                
+                                                                                                    let url = 'https://kr-to-do.herokuapp.com/accounts/userApi?username='+ e.target.value
+                                                                                                    fetch(url)
+                                                                                                    .then((resp)=>resp.json())
+                                                                                                    .then((data)=>{
+                                                                                                        // console.log(data,data['msg'])
+                                                                                                        if (data['msg'] == ''){
+                                                                                                            document.getElementById("userError").innerHTML = data['msg']
+                                                                                                            usernameC = true
+                                                                                                            // console.log('true')
+                                                                                                            submitBtn()
+                                                                                                        }
+                                                                                                        else{
+                                                                                                            document.getElementById('userError').innerHTML = data['msg']
+                                                                                                            usernameC = false
+                                                                                                            // console.log('false')
+                                                                                                            submitBtn()
+                                                                                                        }
+                                                                                                    })                            
+                                                                                            }
+                                                                                        }
+                                                                    
+                                                                                        
+                                                                    
+                                                                                        
+                                                                    
+                                                                                        // console.log(csrf_token)
+                                                                                        function submitBtn(){
+                                                                                            
+                                                                                            // console.log('inside submit')
+                                                                                            if(usernameC && passwordC){
+                                                                                                document.getElementById('submit').classList.remove('disable')
+                                                                                                form = document.getElementById('form')  
+                                                                                                
+                                                                                                // console.log(csrf_token)  
+                                                                                                form.addEventListener('submit',(e)=>{
+                                                                                                    e.preventDefault()
+                                                                                                        let usernameData = document.getElementById('username').value
+                                                                                                        let passData = document.getElementById('pass').value
+                                                                                                        let url = 'https://kr-to-do.herokuapp.com/accounts/signupApi'
+                                                                                                        fetch(url,{
+                                                                                                            method:'POST',
+                                                                                                            headers:{
+                                                                                                                'Content-type':'application/json',
+                                                                                                                'X-CSRFToken':csrf_token
+                                                                                                            },
+                                                                                                            body:JSON.stringify({
+                                                                                                                'username': usernameData,
+                                                                                                                'password': passData
+                                                                                                            })
+                                                                                                        })
+                                                                                                        .then((resp)=>resp.json())
+                                                                                                        .then((data)=>{
+                                                                                                            // console.log(data)
+                                                                                                            if (data['success'] == 'done'){
+                                                                                                                // console.log('success')
+                                                                                                                document.getElementById('success').style.display = 'block';
+                                                                                                                setTimeout(()=>{
+                                                                                                                    document.getElementById('login').click()
+                                                                                                                },2000);
+                                                                                                            }
+                                                                                                            else if (data['success'] == 'fail'){
+                                                                                                                // console.log('fail')
+                                                                                                                document.getElementById('fail').style.display = 'block';
+                                                                                                            }
+                                                                                                        })
+                                                                                                    
+                                                                                                })
+                                                                                            }else{
+                                                                                                document.getElementById('submit').classList.add('disable')
+                                                                                            }
+                                                                                        }
+                                                                    
+                                                                                       
+                                                                                        
+                                                                                    </script>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
         </div>
     </div>
+</div>
+                
+</div>
+            
+</div>
+</div>
     <script src="{% static 'accounts/js/app.js' %}">
     </script>
 {% endblock %}

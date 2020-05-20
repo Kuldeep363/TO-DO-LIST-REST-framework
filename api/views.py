@@ -18,10 +18,10 @@ from datetime import datetime as dt
 @api_view(['GET'])
 def apiUrls(request):
     api_urls={
-        'To see the list of tasks':'http://127.0.0.1:8000/api/task-list',
-        'To create new task':'http://127.0.0.1:8000/api/task-create',
-        'To update a task':'http://127.0.0.1:8000/api/task-update/slug',
-        'To delete a task':'http://127.0.0.1:8000/api/task-delete/slug',
+        'To see the list of tasks':'https://kr-to-do.herokuapp.com/api/task-list',
+        'To create new task':'https://kr-to-do.herokuapp.com/api/task-create',
+        'To update a task':'https://kr-to-do.herokuapp.com/api/task-update/slug',
+        'To delete a task':'https://kr-to-do.herokuapp.com/api/task-delete/slug',
     }
 
     return Response(api_urls)
