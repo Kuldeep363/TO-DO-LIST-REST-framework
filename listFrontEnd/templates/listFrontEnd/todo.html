@@ -124,7 +124,7 @@
                                                                                     fetch(url)
                                                                                     .then((res)=>res.json())
                                                                                     .then((data)=>{
-                                                                                        console.log('Data:',data)
+                                                                                        // console.log('Data:',data)
                                                                     
                                                                                         let list = data
                                                                                         for(let i in list){
@@ -135,7 +135,7 @@
                                                                                             catch(err){
                                                                     
                                                                                             }
-                                                                                            console.log(list[i])    
+                                                                                            // console.log(list[i])    
                                                                                             let item = `
                                                                                             <div class="d-flex justify-content-center m-3 taskAnim" id='data-row-${i}'>
                                                                                                 <div class="d-flex justify-content-center tasks-container" >               
@@ -218,13 +218,13 @@
                                                                                             show[i].addEventListener('click',()=>{
                                                                                                 task[i].classList.toggle('display')
                                                                                                 show[i].style.display = 'none'
-                                                                                                console.log(task[i],show[i])
+                                                                                                // console.log(task[i],show[i])
                                                                                             });
                                                                     
                                                                                             hide[i].addEventListener('click',()=>{
                                                                                                 task[i].classList.toggle('display');
                                                                                                 show[i].style.display = 'inline-block';
-                                                                                                console.log(task[i],show[i])
+                                                                                                // console.log(task[i],show[i])
                                                                     
                                                                                             })
                                                                     
@@ -235,15 +235,15 @@
                                                                                 let form = document.getElementById('form')
                                                                                 form.addEventListener('submit',(e)=>{
                                                                                     e.preventDefault()
-                                                                                    console.log('form submitted')
+                                                                                    // console.log('form submitted')
                                                                     
                                                                                     let url = 'https://kr-to-do.herokuapp.com/api/task-create'
                                                                     
                                                                                     if(active_task != null){
                                                                                         url = `https://kr-to-do.herokuapp.com/api/task-update/${active_task.taskSlug}`
-                                                                                        console.log(active_task,url)
+                                                                                        // console.log(active_task,url)
                                                                                         active_task = null
-                                                                                        console.log(active_task)
+                                                                                        // console.log(active_task)
                                                                                     }
                                                                                     
                                                                                     let title = document.getElementById('task').value
@@ -267,7 +267,7 @@
                                                                                 })
                                                                     
                                                                                 function updateTask(item){
-                                                                                    console.log('edit clicked:',item)
+                                                                                    // console.log('edit clicked:',item)
                                                                                     
                                                                     
                                                                                     active_task = item
@@ -280,7 +280,7 @@
                                                                                 }
                                                                     
                                                                                 function completeTask(item){
-                                                                                    console.log('task completed:',item)
+                                                                                    // console.log('task completed:',item)
                                                                                     let url = `https://kr-to-do.herokuapp.com/api/task-update/${item.taskSlug}`
                                                                                     fetch(url,{
                                                                                         method:'POST',
@@ -298,7 +298,7 @@
                                                                                 }
                                                                     
                                                                                 function deleteTask(item){
-                                                                                    console.log('delete clicked')
+                                                                                    // console.log('delete clicked')
                                                                                     let url = `https://kr-to-do.herokuapp.com/api/task-delete/${item.taskSlug}`
                                                                     
                                                                                     fetch(url,{

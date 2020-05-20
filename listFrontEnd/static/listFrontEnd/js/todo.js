@@ -5,7 +5,7 @@ window.onload=()=>{
             const title = document.getElementById('task').value;
             const date = document.getElementById('date').value;
             flag = 1
-            console.log(title,date)
+            // console.log(title,date)
             if(title == '' || title == null){
                 task_err = document.getElementById('task_error')
                 task_err.innerHTML = 'Please Add Task'
@@ -37,13 +37,13 @@ window.onload=()=>{
 
     let h = document.querySelectorAll('.title');
     let tasks = document.getElementsByClassName('task-status');
-    // console.log(h,h.length)
-    // console.log(tasks)
+    console.log(h,h.length)
+    console.log(tasks)
     for(let i=0;i<h.length;i++){
-        // console.log(i)
+        console.log(i)
         for(let j=i;j<i+2;j++){
             tasks[j+i].style.lineHeight = h[i].clientHeight + 'px';
-            // console.log(h[i])
+            console.log(h[i])
         }               
     }
 
