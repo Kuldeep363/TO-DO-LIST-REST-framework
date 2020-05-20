@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 
 from rest_framework.decorators import api_view
@@ -19,55 +19,74 @@ from datetime import datetime as dt
 def apiUrls(request):
     api_urls={
         'To see the list of tasks':'http://127.0.0.1:8000/api/task-list',
-        'To see the detail view of a task':'http://127.0.0.1:8000/api/task-detail/id',
         'To create new task':'http://127.0.0.1:8000/api/task-create',
-        'To update a task':'http://127.0.0.1:8000/api/task-update/id',
-        'To delete a task':'http://127.0.0.1:8000/api/task-delete/id',
+        'To update a task':'http://127.0.0.1:8000/api/task-update/slug',
+        'To delete a task':'http://127.0.0.1:8000/api/task-delete/slug',
     }
 
     return Response(api_urls)
 
 @api_view(['GET'])
 def taskList(request):
-    tasks = Tasks.objects.all().order_by('-id')
-    serializer = TaskSerializer(tasks,many=True)
-    return Response(serializer.data)
+    user = request.user
+    if user.is_authenticated:
+        tasks = Tasks.objects.filter(taskOwner = user.username).order_by('-id')
+        serializer = TaskSerializer(tasks,many=True)
+        return Response(serializer.data)
+    else:
+        return Response({'error':'Authentication require! Please Signin'})
 
-@api_view(['GET'])
-def taskDetail(request,slug=None):
-    task = Tasks.objects.get(taskSlug = slug)
-    serializer = TaskSerializer(task,many=False)
-    return Response(serializer.data)
+# @api_view(['GET'])
+# def taskDetail(request,slug=None):
+#     task = Tasks.objects.get(taskSlug = slug)
+#     serializer = TaskSerializer(task,many=False)
+#     return Response(serializer.data)
 
 @api_view(['POST'])
 def taskCreate(request):
-    data = request.data
-    print(request.user.username)
-    data['taskOwner'] = request.user.username
-    data['taskSlug'] = dt.now().strftime('%H%M%Y%d%m%S')
-    serializer = TaskSerializer(data = data)
+    user = request.user
+    if user.is_authenticated:
+        data = request.data
+        print(user.username)
+        data['taskOwner'] = user.username
+        data['taskSlug'] = dt.now().strftime('%H%M%Y%d%m%S')
+        serializer = TaskSerializer(data = data)
 
-    if serializer.is_valid():
-        serializer.save()
+        if serializer.is_valid():
+            serializer.save()
 
-    return Response(serializer.data)
+        return Response(serializer.data)
+    else:
+        return Response({'error':"permission Denied"})
 
 @api_view(['POST'])
 def taskUpdate(request,slug=None):
-    task = Tasks.objects.get(taskSlug = slug)
-    serialize = TaskSerializer(instance = task, data = request.data)
+    user = request.user
+    if user.is_authenticated:
+        task = get_object_or_404(Tasks,taskSlug = slug)
+        if task.taskOwner == user.username:
+            serialize = TaskSerializer(instance = task, data = request.data)
 
-    if serialize.is_valid():
-        serialize.save()
-
-    return Response(serialize.data)
+            if serialize.is_valid():
+                serialize.save()
+                return Response(serialize.data)
+        else:
+            return Response({'error':'Permission Denied'})        
+    else:
+        return Response({'error':'Permission Denied Authentication needed'})
 
 @api_view(['DELETE'])
 def taskDelete(request,slug = None):
-    task = Tasks.objects.get(taskSlug = slug)
-    task.delete()
-
-    return Response('Task Delete Successfully!')
+    user = request.user
+    if user.is_authenticated:
+        task = get_object_or_404(Tasks,taskSlug = slug)
+        if task.taskOwner == user.username:   
+            task.delete()
+            return Response('Task Delete Successfully!')
+        else:
+            return Response({'error':'Permission Denied! You are not owner of this task'})        
+    else:
+        return Response({'error':'Permission Denied'})
 
 
 

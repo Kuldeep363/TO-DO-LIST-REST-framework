@@ -5,7 +5,7 @@ from . import views as apiView
 urlpatterns = [
     path('',apiView.apiUrls,name='apiHome'),
     path('task-list',apiView.taskList,name='taskList'),
-    path('task-detail/<slug:slug>',apiView.taskDetail,name='taskDetail'),
+    # path('task-detail/<slug:slug>',apiView.taskDetail,name='taskDetail'),
     path('task-create',apiView.taskCreate,name='taskCreate'),
     path('task-update/<slug:slug>',apiView.taskUpdate,name='taskUpdate'),
     path('task-delete/<slug:slug>',apiView.taskDelete,name='taskDelete')

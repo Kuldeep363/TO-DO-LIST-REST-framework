@@ -4,7 +4,9 @@
     box-sizing: border-box;
     scroll-behavior: smooth;
 }
-
+body{
+    overflow-x: hidden;
+}
 ::-webkit-scrollbar{
     box-shadow: inset 5px 5px 10px #f790717c,
                 inset -5px -5px 10px #f790717c;
@@ -16,7 +18,9 @@
     background-color: #fac3ad;
     border-radius: 20px;
 }
-
+a{
+    text-decoration: none!important;
+}
 @font-face{
     font-family: kr;
     src: url('Blur Light.ttf');
@@ -179,3 +183,14 @@ label{
     display: none; 
 }
 
+.taskAnim{
+    animation: comein forwards 1s;
+}
+@keyframes comein{
+    0%{
+        transform: translateX(-200px);
+    }
+    100%{
+        transform: translateX(0px);
+    }
+}

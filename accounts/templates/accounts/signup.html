@@ -1,0 +1,203 @@
+{% extends 'accounts/base.html' %}
+
+{% load static %}
+
+{% block page_title %} <title>Signup</title> {% endblock %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'accounts/css/app.css' %}">
+{% endblock %}
+
+{% block container %}
+
+    <div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100vh;">
+        
+        <div class="form-wrapper d-flex flex-column" >
+            <div class="d-flex justify-content-center">
+                <p style="font-size: 50px;font-weight: bold;font-family: rawstar1;">SIGNUP</p>
+            </div>
+            <div class=" d-flex justify-content-center">
+                <form  method="POST" id="form">
+                    <div class="form-group" style="height: 100px;">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" class="form-input" autocomplete="off" autocorrect='off'>
+                        <small id="userError" style="color: red;"></small>
+                    </div>
+                    <div class="form-group" style="height: 100px;">
+                        <div id="pass-container" style="position: relative;">
+                            <label for="pass">Password</label>
+                            <input type="password" id="pass" class="form-input">
+                            <img src="{% static 'accounts/images/icons8-invisible-40.png' %}" alt="password|password invisible" id="viewPass">
+                            <small id="passError" style="color: red;"></small>
+                        </div>
+                    </div>
+                    <div class="form-group text-center mt-1">
+                        <input type="submit" id="submit" value="SIGNUP"  class="disable">
+                    </div>
+                    
+                    <div class="form-group text-center">
+                        <span class="p-3 "><a href="{% url 'login' %}" id="login">Login</a></span>
+                    </div>
+
+
+                    <div class="alert alert-success alert-dismissible fade show" role="alert" id="success" style="display: none;">
+                        <div class="d-flex justify-content-center">
+                            <div><img src="{% static 'accounts/images/icons8-checked-80.png' %}" alt="todo checked" style="width: 30px;height: 30px;"></div>
+                            <div><p style="font-family: rawstar1;font-size: 20px;">Signup Successful</p></div>
+                        </div>
+                        
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="outline: none;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+    
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="fail" style="display: none;">
+                        <div class="d-flex justify-content-center">
+                            <div><img src="{% static 'accounts/images/icons8-cloud-cross-48.png' %}" alt="todo checked" style="width: 30px;height: 30px;"></div>
+                            <div><p style="font-family: rawstar1;font-size: 20px;">Please Try Again</p></div>
+                        </div>
+                        
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="outline: none;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </form>
+
+                
+
+
+
+                <script>
+                    //csrf token
+                    function getCookie(name) {
+                        var cookieValue = null;
+                        if (document.cookie && document.cookie !== '') {
+                            var cookies = document.cookie.split(';');
+                            for (var i = 0; i < cookies.length; i++) {
+                                var cookie = cookies[i].trim();
+                                // Does this cookie string begin with the name we want?
+                                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                    break;
+                                }
+                            }
+                        }
+                        return cookieValue;
+                    }
+                    var csrf_token = getCookie('csrftoken')
+                    // password
+                    let password = document.getElementById('pass');
+                    let passwordC = false
+                    let usernameC = false
+                    password.oninput=(e)=>{
+                        if (e.target.value.length == 0){
+                            document.getElementById('passError').innerHTML = 'Please enter password'
+                            passwordC = false   
+                            submitBtn()
+                        }
+                        else if (e.target.value.length < 8){
+                            document.getElementById('passError').innerHTML = 'Password must be 8 character long'
+                            passwordC = false
+                            submitBtn()
+                        }
+                        else{
+                            document.getElementById('passError').innerHTML = ''
+                            passwordC = true
+                            submitBtn()
+                        }
+                    }
+
+                    // username
+                    let username = document.getElementById('username');
+                    username.oninput=(e)=>{
+                        if (e.target.value.length == 0){
+                            document.getElementById('userError').innerHTML = 'Please enter username'
+                        }
+                        else if (e.target.value.length < 8){
+                            document.getElementById('userError').innerHTML = 'Username must be 8 characters long'
+                            usernameC = false
+                        }
+                        else{
+                            
+                                let url = 'http://127.0.0.1:8000/accounts/userApi?username='+ e.target.value
+                                fetch(url)
+                                .then((resp)=>resp.json())
+                                .then((data)=>{
+                                    // console.log(data,data['msg'])
+                                    if (data['msg'] == ''){
+                                        document.getElementById("userError").innerHTML = data['msg']
+                                        usernameC = true
+                                        // console.log('true')
+                                        submitBtn()
+                                    }
+                                    else{
+                                        document.getElementById('userError').innerHTML = data['msg']
+                                        usernameC = false
+                                        // console.log('false')
+                                        submitBtn()
+                                    }
+                                })                            
+                        }
+                    }
+
+                    
+
+                    
+
+                    // console.log(csrf_token)
+                    function submitBtn(){
+                        
+                        // console.log('inside submit')
+                        if(usernameC && passwordC){
+                            document.getElementById('submit').classList.remove('disable')
+                            form = document.getElementById('form')  
+                            
+                            // console.log(csrf_token)  
+                            form.addEventListener('submit',(e)=>{
+                                e.preventDefault()
+                                    let usernameData = document.getElementById('username').value
+                                    let passData = document.getElementById('pass').value
+                                    let url = 'http://127.0.0.1:8000/accounts/signupApi'
+                                    fetch(url,{
+                                        method:'POST',
+                                        headers:{
+                                            'Content-type':'application/json',
+                                            'X-CSRFToken':csrf_token
+                                        },
+                                        body:JSON.stringify({
+                                            'username': usernameData,
+                                            'password': passData
+                                        })
+                                    })
+                                    .then((resp)=>resp.json())
+                                    .then((data)=>{
+                                        // console.log(data)
+                                        if (data['success'] == 'done'){
+                                            // console.log('success')
+                                            document.getElementById('success').style.display = 'block';
+                                            setTimeout(()=>{
+                                                document.getElementById('login').click()
+                                            },2000);
+                                        }
+                                        else if (data['success'] == 'fail'){
+                                            // console.log('fail')
+                                            document.getElementById('fail').style.display = 'block';
+                                        }
+                                    })
+                                
+                            })
+                        }else{
+                            document.getElementById('submit').classList.add('disable')
+                        }
+                    }
+
+                   
+                    
+                </script>
+            </div>
+            
+        </div>
+    </div>
+    <script src="{% static 'accounts/js/app.js' %}">
+    </script>
+{% endblock %}

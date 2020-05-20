@@ -1,0 +1,64 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+@font-face{
+    font-family: rawstar;
+    src: url('../images/ProductSans-Thin.ttf');
+}
+@font-face{
+    font-family: rawstar1;
+    src: url('../images/Blur Light.ttf');
+}
+body{
+    background-color: #ffe8df63;
+    font-family: rawstar;
+}
+.form-wrapper,form{
+    width: 50%;
+}
+@media(max-width: 1200px){
+    .form-wrapper,form{
+        width: 100%;
+    }   
+}
+a{
+    text-decoration: none!important;
+}
+.form-input{
+    display: block;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    outline: none;
+    transition: 0.5s all linear;
+}
+.form-input:focus{
+    box-shadow: 5px 5px 10px #f7c6b37c;
+}
+#submit{
+    background-color: cyan;
+    border: none;
+    outline: none;
+    width: 50%;
+    height: 40px;
+    border-radius: 5px;
+    transition: 0.5s all linear;
+}
+#viewPass{
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+}
+#passError{
+    transition: all 0.5s linear;
+}
+.disable{
+    background-color: rgb(160, 158, 158)!important;
+    color: blanchedalmond;
+    pointer-events: none;
+}
